@@ -1,5 +1,14 @@
 export const activeNews = [
   {
+    id: 16,
+    regCode: "KAYIT #2026-09P",
+    category: "YOUTUBE // SÖYLEŞİ",
+    title: "KAFA TV: Taşacak Bu Deniz Ekibiyle Kahkaha Dolu Anlar",
+    summary: "Taşacak Bu Deniz dizisinin sevilen ekibi Burak Yörük, Deniz Baysal, Aytek Şayan ve Seda Soysal, KAFA TV'nin konuğu oldu. Trabzon setindeki dostlukları, eğlenceli anıları, Aytek Şayan'ın set ortasındaki 'drone' krizleri ve çok daha fazlası bu keyifli sohbette masaya yatırılıyor.",
+    linkText: "SÖYLEŞİYİ İZLE ↗",
+    linkUrl: "/basin" 
+  },
+  {
     id: 15,
     regCode: "KAYIT #2026-07O",
     category: "YOUTUBE // SÖYLEŞİ",

@@ -69,7 +69,7 @@ function Home() {
   const sideArticles = activeNews.slice(1, 3);
 
   const newsCoverImages = {
-    15: '/yepyenii.jpeg', 
+    16: '/tbdaytek.jpeg',
   };
 
   // Doğum günü sayacı: saat/dakika farkının gün-atlama hatası yaratmaması için
