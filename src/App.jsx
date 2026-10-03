@@ -60,7 +60,7 @@ function App() {
   const [timeLeft, setTimeLeft] = useState('');
 
   // Sezon arasına girildiğinde true, sezon başladığında false yap
-  const isSeasonBreak = true; 
+  const isSeasonBreak = false; 
 
   useEffect(() => {
     const calculateCountdown = () => {
