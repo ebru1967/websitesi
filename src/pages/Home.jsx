@@ -52,7 +52,6 @@ function Home() {
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    // Sadece #kronoloji'ye gitmek için değil, pop-up kontrolü için de useEffect
     if (location.hash === '#kronoloji') {
       const element = document.getElementById('kronoloji');
       if (element) {
@@ -64,10 +63,9 @@ function Home() {
       window.scrollTo(0, 0);
     }
 
-    // Ziyaretçi bu oturumda (session) uyarıyı gördü mü?
+    // Altın 61 Pop-up Kontrolü
     const hasSeenPopup = sessionStorage.getItem('altin61_popup_seen');
     if (!hasSeenPopup) {
-      // Site yüklendikten 800ms sonra havalı bir şekilde ekrana gelsin
       const timer = setTimeout(() => {
         setShowPopup(true);
       }, 800);
@@ -75,17 +73,18 @@ function Home() {
     }
   }, [location]);
 
-  // Pop-up Kapatma Fonksiyonu
   const closePopup = () => {
     setShowPopup(false);
-    sessionStorage.setItem('altin61_popup_seen', 'true'); // Oturum boyunca bir daha sorma
+    sessionStorage.setItem('altin61_popup_seen', 'true'); 
   };
 
   const mainArticle = activeNews[0]; 
   const sideArticles = activeNews.slice(1, 3);
 
+  // GÖRSELİN GERİ GELMESİNİ SAĞLAYAN KISIM
   const newsCoverImages = {
-    16: '/tbdaytek.jpeg',
+    16: '/tbdaytek.jpeg', // KAFA TV Manşet Görseli
+    15: '/yepyenii.jpeg', // Yedek
   };
 
   const today = new Date();
@@ -126,7 +125,7 @@ function Home() {
                 rel="noreferrer"
                 className="editorial-link-btn-anchor"
                 style={{ backgroundColor: 'var(--accent-dark)', color: '#fff', padding: '0.8rem 2rem', textDecoration: 'none', fontWeight: 'bold', borderRadius: '30px' }}
-                onClick={closePopup} // Linke tıklayınca pencere kapansın
+                onClick={closePopup} 
               >
                 HEMEN OY VER ↗
               </a>
@@ -142,7 +141,6 @@ function Home() {
       )}
 
       <style>{`
-        /* POP-UP CSS KODLARI */
         .popup-overlay {
           position: fixed;
           top: 0; left: 0; right: 0; bottom: 0;
@@ -214,14 +212,12 @@ function Home() {
                 </span>
               )}
 
-              {/*GÜNLÜK SERİ ROZETİ */}
               {streakCount > 0 && (
                 <span className="archive-badge" style={{ backgroundColor: 'var(--accent-dark)', color: 'var(--bg-main)' }}>
                   🔥 {streakCount} GÜNLÜK SERİ
                 </span>
               )}
 
-              {/* TOPLAM ZİYARET SİCİLİ */}
               {totalVisits > 1 && (
                 <span className="archive-badge" style={{ opacity: 0.7 }}>
                   📁 {totalVisits}. KAYIT ZİYARETİ
