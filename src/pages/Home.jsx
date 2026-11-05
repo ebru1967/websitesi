@@ -18,15 +18,12 @@ function useDailyStreak() {
       let currentTotal = parseInt(localStorage.getItem('fc_totalVisits') || '0', 10);
 
       if (lastVisit === today) {
-        // Bugün zaten girilmiş, seriyi ve toplamı sabit tut
         setStreak(currentStreak);
         setTotalVisits(currentTotal);
       } else {
         if (lastVisit === yesterdayStr) {
-          // Dün girilmiş, seriyi artır
           currentStreak += 1;
         } else {
-          // Seri bozulmuş veya ilk giriş, 1'den başlat
           currentStreak = 1;
         }
         currentTotal += 1;
@@ -39,7 +36,6 @@ function useDailyStreak() {
         setTotalVisits(currentTotal);
       }
     } catch (e) {
-      // localStorage erişilemezse (gizli sekme vb.) sessizce yok say
       setStreak(0);
       setTotalVisits(0);
     }
@@ -51,8 +47,12 @@ function useDailyStreak() {
 function Home() {
   const location = useLocation();
   const { streak: streakCount, totalVisits } = useDailyStreak(); 
+  
+  // --- POP-UP (UYARI) STATE'İ ---
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
+    // Sadece #kronoloji'ye gitmek için değil, pop-up kontrolü için de useEffect
     if (location.hash === '#kronoloji') {
       const element = document.getElementById('kronoloji');
       if (element) {
@@ -63,17 +63,31 @@ function Home() {
     } else if (!location.hash) {
       window.scrollTo(0, 0);
     }
+
+    // Ziyaretçi bu oturumda (session) uyarıyı gördü mü?
+    const hasSeenPopup = sessionStorage.getItem('altin61_popup_seen');
+    if (!hasSeenPopup) {
+      // Site yüklendikten 800ms sonra havalı bir şekilde ekrana gelsin
+      const timer = setTimeout(() => {
+        setShowPopup(true);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
   }, [location]);
+
+  // Pop-up Kapatma Fonksiyonu
+  const closePopup = () => {
+    setShowPopup(false);
+    sessionStorage.setItem('altin61_popup_seen', 'true'); // Oturum boyunca bir daha sorma
+  };
 
   const mainArticle = activeNews[0]; 
   const sideArticles = activeNews.slice(1, 3);
 
   const newsCoverImages = {
-    16: '/tbdaytek.jpeg',
+    17: '/altin61.jpeg',
   };
 
-  // Doğum günü sayacı: saat/dakika farkının gün-atlama hatası yaratmaması için
-  // her iki tarih de gece yarısına (saatsiz) normalize ediliyor.
   const today = new Date();
   const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
@@ -89,6 +103,87 @@ function Home() {
 
   return (
     <div className="home-wrapper animate-fade">
+      
+      {/* POP-UP (UYARI) TASARIMI */}
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content animate-fade">
+            <button className="popup-close-btn" onClick={closePopup}>×</button>
+            <span className="archive-badge" style={{ marginBottom: '1rem', display: 'inline-block' }}>
+              🚨 ACİL OYLAMA ÇAĞRISI
+            </span>
+            <h2 style={{ fontFamily: 'var(--font-heading)', color: 'var(--accent-dark)', fontSize: '2rem', marginBottom: '1rem', lineHeight: '1.2' }}>
+              ALTIN 61 ÖDÜLLERİ<br/>OYLAMASI BAŞLADI!
+            </h2>
+            <p style={{ opacity: 0.9, marginBottom: '2rem', lineHeight: '1.6' }}>
+              Aytek Şayan, "Taşacak Bu Deniz" dizisindeki Şerif karakteriyle Altın 61 Ödülleri'nde aday! 
+              Bu değerli ödülü Trabzon'dan alması için desteğimize ihtiyacı var. Hemen şimdi linke tıklayıp oyunu kullan!
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <a 
+                href="http://www.altin61odulleri.org" 
+                target="_blank" 
+                rel="noreferrer"
+                className="editorial-link-btn-anchor"
+                style={{ backgroundColor: 'var(--accent-dark)', color: '#fff', padding: '0.8rem 2rem', textDecoration: 'none', fontWeight: 'bold', borderRadius: '30px' }}
+                onClick={closePopup} // Linke tıklayınca pencere kapansın
+              >
+                HEMEN OY VER ↗
+              </a>
+              <button 
+                onClick={closePopup} 
+                style={{ backgroundColor: 'transparent', color: 'var(--accent-dark)', border: '1px solid var(--accent-dark)', padding: '0.8rem 2rem', fontWeight: 'bold', borderRadius: '30px', cursor: 'pointer' }}
+              >
+                SONRA BELKİ
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        /* POP-UP CSS KODLARI */
+        .popup-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0, 0, 0, 0.75);
+          backdrop-filter: blur(8px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          padding: 1rem;
+        }
+
+        .popup-content {
+          background: var(--bg-main);
+          border: 1px solid rgba(84, 107, 65, 0.2);
+          border-left: 6px solid var(--accent-dark);
+          border-radius: 8px;
+          padding: 3rem 2rem;
+          max-width: 550px;
+          width: 100%;
+          text-align: center;
+          position: relative;
+          box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .popup-close-btn {
+          position: absolute;
+          top: 15px; right: 20px;
+          background: transparent;
+          border: none;
+          font-size: 2.5rem;
+          color: var(--accent-dark);
+          cursor: pointer;
+          opacity: 0.6;
+          transition: opacity 0.3s;
+        }
+
+        .popup-close-btn:hover {
+          opacity: 1;
+        }
+      `}</style>
       
       {/* DERGİ KAPAĞI KONSEPTİ */}
       <section className="editorial-hero">
